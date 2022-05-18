@@ -52,8 +52,8 @@ vipc_sources = [
 if arch == "larch64":
   vipc_sources += ['visionipc/visionbuf_ion.cc']
 else:
-  vipc_sources += ['visionipc/visionbuf_cl.cc']
-
+  vipc_sources += ['visionipc/visionbuf_cuda.cc']
+  # vipc_sources += ['visionipc/visionbuf_cl.cc']
 vipc_objects = env.SharedObject(vipc_sources)
 vipc = env.Library('visionipc', vipc_objects)
 
