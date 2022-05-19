@@ -17,11 +17,15 @@ cpppath = [
   messaging_dir,
   '/usr/lib/include',
   '/opt/homebrew/include',
+  '/usr/local/cuda/lib64',
+  '/usr/local/cuda/include',
   sysconfig.get_paths()['include'],
 ]
 
 libpath = [
   '/opt/homebrew/lib',
+  '/usr/local/cuda/lib64',
+  '/usr/local/cuda/include',
 ]
 
 AddOption('--test',

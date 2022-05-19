@@ -35,7 +35,7 @@ messaging_objects = env.SharedObject([
 messaging_lib = env.Library('messaging', messaging_objects)
 Depends('messaging/impl_zmq.cc', services_h)
 
-env.Program('messaging/bridge', ['messaging/bridge.cc'], LIBS=[messaging_lib, 'zmq', common])
+env.Program('messaging/bridge', ['messaging/bridge.cc'], LIBS=[messaging_lib, 'zmq', common, ])
 Depends('messaging/bridge.cc', services_h)
 
 envCython.Program('messaging/messaging_pyx.so', 'messaging/messaging_pyx.pyx', LIBS=envCython["LIBS"]+[messaging_lib, "zmq", common])
@@ -59,7 +59,7 @@ vipc = env.Library('visionipc', vipc_objects)
 
 
 vipc_frameworks = []
-vipc_libs = envCython["LIBS"] + [vipc, messaging_lib, common, "zmq"]
+vipc_libs = envCython["LIBS"] + [vipc, messaging_lib, common, "zmq", "cuda", "cudart"]
 if arch == "Darwin":
   vipc_frameworks.append('OpenCL')
 else:
