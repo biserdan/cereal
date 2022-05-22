@@ -8,7 +8,26 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/types.h>
-#include "/usr/local/cuda/include/cuda_runtime.h"
+#include "cuda_runtime.h"
+
+inline void __checkMsg(cudaError_t code, const char *file, const int line)
+{
+  cudaError_t err = cudaGetLastError();
+  if (cudaSuccess != err)
+  {
+    fprintf(stderr, "checkMsg() CUDA error: %s in file <%s>, line %i : %s.\n", cudaGetErrorString(code), file, line, cudaGetErrorString(err));
+    exit(-1);
+  }
+}
+inline void __checkMsgNoFail(cudaError_t code, const char *file, const int line)
+{
+  cudaError_t err = cudaGetLastError();
+  if (cudaSuccess != err)
+  {
+    fprintf(stderr, "checkMsg() CUDA warning: %s in file <%s>, line %i : %s.\n", cudaGetErrorString(code), file, line, cudaGetErrorString(err));
+  }
+}
+
 
 std::atomic<int> offset = 0;
 
@@ -52,10 +71,13 @@ void VisionBuf::allocate(size_t length) {
 // }
 
 void VisionBuf::init_cuda(){
-  int err;
+  
+  //int err;
+  //err = cudaMalloc((void**)&buf_cuda, this->len);
+  //assert(err == 0);
+  checkMsg(cudaMalloc((void**)&buf_cuda, this->len));
 
-  err = cudaMalloc((void**)&buf_cuda, this->len);
-  assert(err == 0);
+  fprintf(stdout,"Visionbuf: %d Pointer: %p\n",type,buf_cuda);
 }
 
 

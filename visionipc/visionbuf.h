@@ -11,6 +11,10 @@
 #define VISIONBUF_SYNC_FROM_DEVICE 0
 #define VISIONBUF_SYNC_TO_DEVICE 1
 
+#define checkMsg(msg) __checkMsg(msg, __FILE__, __LINE__)
+#define checkMsgNoFail(msg) __checkMsgNoFail(msg, __FILE__, __LINE__)
+
+
 enum VisionStreamType {
   VISION_STREAM_RGB_ROAD,
   VISION_STREAM_RGB_DRIVER,

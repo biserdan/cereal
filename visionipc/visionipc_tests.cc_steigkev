@@ -4,10 +4,27 @@
 #include "catch2/catch.hpp"
 #include "visionipc_server.h"
 #include "visionipc_client.h"
+// #include "/usr/local/cuda/include/cuda_runtime.h"
+#include "cuda_runtime.h"
 
 static void zmq_sleep(int milliseconds=1000){
   if (messaging_use_zmq()){
     std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+  }
+}
+
+static void print_file(int fd) {
+  FILE* ptr =  fdopen(fd, "r");
+  if (NULL == ptr) {
+      printf("file can't be opened \n");
+  }
+
+  uint8_t ch;
+  int size = 100; //100*100*3/2;
+
+  for(int i = 0; i < size; i++) {
+    ch = fgetc(ptr);
+    printf("%x ", ch);
   }
 }
 
@@ -66,13 +83,29 @@ TEST_CASE("Send single buffer"){
 
   *((uint64_t*)buf->addr) = 1234;
 
+  // read content of buffer file
+  printf("content at start:\n" );
+  print_file(buf->fd);
+
+  uint8_t *read_buffer = (uint8_t *)malloc(sizeof(uint8_t)*100*100*3/2);
+  cudaMemcpy(read_buffer, buf->buf_cuda, sizeof(uint8_t)*100*100*3/2, cudaMemcpyDeviceToHost);;
+  printf("device memory: %lu\n", *((uint64_t*)read_buffer));
+
   VisionIpcBufExtra extra = {0};
   extra.frame_id = 1337;
   buf->set_frame_id(extra.frame_id);
+
   server.send(buf, &extra);
+
+  // read content of buffer file
+  printf("content after synch:\n");
+  print_file(buf->fd);
 
   VisionIpcBufExtra extra_recv = {0};
   VisionBuf * recv_buf = client.recv(&extra_recv);
+  // read content of buffer file
+
+
   REQUIRE(recv_buf != nullptr);
   REQUIRE(*(uint64_t*)recv_buf->addr == 1234);
   REQUIRE(extra_recv.frame_id == extra.frame_id);
