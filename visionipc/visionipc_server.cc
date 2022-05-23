@@ -156,7 +156,7 @@ void VisionIpcServer::send(VisionBuf * buf, VisionIpcBufExtra * extra, bool sync
   }
   assert(buffers.count(buf->type));
   assert(buf->idx < buffers[buf->type].size());
-  fprintf(stdout,"Value: %" PRIu64 "\n",(uint64_t)buf->addr);
+  //fprintf(stdout,"Value: %" PRIu64 "\n",(uint64_t)buf->addr);
 
   // Send over correct msgq socket
   VisionIpcPacket packet = {0};

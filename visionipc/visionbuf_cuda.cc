@@ -77,7 +77,7 @@ void VisionBuf::init_cuda(){
   //assert(err == 0);
   checkMsg(cudaMalloc((void**)&buf_cuda, this->len));
 
-  fprintf(stdout,"Visionbuf: %d Pointer: %p\n",type,buf_cuda);
+  // fprintf(stdout,"Visionbuf: %d Pointer: %p\n",type,buf_cuda);
 }
 
 
