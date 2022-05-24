@@ -49,6 +49,7 @@ void VisionIpcServer::create_buffers(VisionStreamType type, size_t num_buffers, 
   // Create map + alloc requested buffers
   for (size_t i = 0; i < num_buffers; i++){
     VisionBuf* buf = new VisionBuf();
+    //fprintf(stdout, "Size= %zu\n",size);
     buf->allocate(size);
     buf->idx = i;
     buf->type = type;
@@ -149,6 +150,9 @@ VisionBuf * VisionIpcServer::get_buffer(VisionStreamType type){
 }
 
 void VisionIpcServer::send(VisionBuf * buf, VisionIpcBufExtra * extra, bool sync){
+  //printf("content before sync send:\n" );
+  //printf("start uint64_t= %" PRIx64 "\n",*((uint64_t*)buf->addr));
+  //printf("end uint8_t= %d\n",*(((uint8_t*)buf->addr)+100*100*3-1));
   if (sync) {
     if (buf->sync(VISIONBUF_SYNC_FROM_DEVICE) != 0) {
       LOGE("Failed to sync buffer");
@@ -156,7 +160,9 @@ void VisionIpcServer::send(VisionBuf * buf, VisionIpcBufExtra * extra, bool sync
   }
   assert(buffers.count(buf->type));
   assert(buf->idx < buffers[buf->type].size());
-  //fprintf(stdout,"Value: %" PRIu64 "\n",(uint64_t)buf->addr);
+  //printf("content after sync send:\n" );
+  //printf("start uint64_t= %" PRIx64 "\n",*((uint64_t*)buf->addr));
+  //printf("end uint8_t= %d\n",*(((uint8_t*)buf->addr)+100*100*3-1));
 
   // Send over correct msgq socket
   VisionIpcPacket packet = {0};

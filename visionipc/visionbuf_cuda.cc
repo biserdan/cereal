@@ -112,7 +112,7 @@ int VisionBuf::sync(int dir) {
   if (!this->buf_cuda) return 0;
 
   if (dir == VISIONBUF_SYNC_FROM_DEVICE) {
-     err = cudaMemcpy(this->addr, buf_cuda, this->len, cudaMemcpyDeviceToHost); 
+    err = cudaMemcpy(this->addr, buf_cuda, this->len, cudaMemcpyDeviceToHost); 
   } else {
     err = cudaMemcpy(buf_cuda, this->addr, this->len, cudaMemcpyHostToDevice);
   }
