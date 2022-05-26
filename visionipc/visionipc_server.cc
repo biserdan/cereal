@@ -55,7 +55,8 @@ void VisionIpcServer::create_buffers(VisionStreamType type, size_t num_buffers, 
 
 //    if (device_id) buf->init_cl(device_id, ctx);
     // buf->init_cl();
-    buf->init_cuda(); //TODO
+    buf->init_cuda(); 
+    printf("server buffer, addr: %p, buf_cuda: %p\n", buf->addr, buf->buf_cuda);
 
     rgb ? buf->init_rgb(width, height, stride) : buf->init_yuv(width, height);
 
@@ -124,8 +125,8 @@ void VisionIpcServer::listener(){
       // Remove some private openCL/ion metadata
       // bufs[i].buf_cl = 0;
       // bufs[i].copy_q = 0;
-      bufs[i].buf_cuda = 0;
-      bufs[i].handle = 0;
+      // bufs[i].buf_cuda = 0;
+      // bufs[i].handle = 0;
 
       bufs[i].server_id = server_id;
     }
@@ -156,7 +157,6 @@ void VisionIpcServer::send(VisionBuf * buf, VisionIpcBufExtra * extra, bool sync
   }
   assert(buffers.count(buf->type));
   assert(buf->idx < buffers[buf->type].size());
-  fprintf(stdout,"Value: %" PRIu64 "\n",(uint64_t)buf->addr);
 
   // Send over correct msgq socket
   VisionIpcPacket packet = {0};

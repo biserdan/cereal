@@ -70,6 +70,9 @@ bool VisionIpcClient::connect(bool blocking){
   for (size_t i = 0; i < num_buffers; i++){
     buffers[i] = bufs[i];
     buffers[i].fd = fds[i];
+    printf("client buffer %d, buf_addr: %p, buf_cuda: %p\n", (int)i, bufs[i].addr, bufs[i].buf_cuda);
+    buffers[i].addr = bufs[i].addr;
+    buffers[i].buf_cuda = bufs[i].buf_cuda;
     buffers[i].import();
     if (buffers[i].rgb) {
       buffers[i].init_rgb(buffers[i].width, buffers[i].height, buffers[i].stride);
@@ -78,7 +81,7 @@ bool VisionIpcClient::connect(bool blocking){
     }
 
     // if (device_id) buffers[i].init_cl(device_id, ctx);
-    buffers[i].init_cuda();
+    // buffers[i].init_cuda();
   }
 
   close(socket_fd);
