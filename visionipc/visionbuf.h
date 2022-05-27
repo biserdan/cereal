@@ -63,6 +63,9 @@ class VisionBuf {
 
   void allocate(size_t len);
   void import();
+
+  
+
 /*  void init_cl(cl_device_id device_id, cl_context ctx);*/
   void init_cuda();
   void init_rgb(size_t width, size_t height, size_t stride);
