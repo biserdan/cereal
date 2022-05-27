@@ -56,6 +56,7 @@ bool VisionIpcClient::connect(bool blocking){
 
   // Send stream type to server to request FDs
   int r = ipc_sendrecv_with_fds(true, socket_fd, &type, sizeof(type), nullptr, 0, nullptr);
+  //printf("ipc_send_recv r: %d\n", r);
   assert(r == sizeof(type));
 
   // Get FDs
@@ -70,7 +71,7 @@ bool VisionIpcClient::connect(bool blocking){
   for (size_t i = 0; i < num_buffers; i++){
     buffers[i] = bufs[i];
     buffers[i].fd = fds[i];
-    printf("client buffer %d, buf_addr: %p, buf_cuda: %p\n", (int)i, bufs[i].addr, bufs[i].buf_cuda);
+    // printf("client buffer %d, buf_addr: %p, buf_cuda: %p\n", (int)i, bufs[i].addr, bufs[i].buf_cuda);
     buffers[i].addr = bufs[i].addr;
     buffers[i].buf_cuda = bufs[i].buf_cuda;
     buffers[i].import();

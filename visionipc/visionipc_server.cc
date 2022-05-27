@@ -56,7 +56,7 @@ void VisionIpcServer::create_buffers(VisionStreamType type, size_t num_buffers, 
 //    if (device_id) buf->init_cl(device_id, ctx);
     // buf->init_cl();
     buf->init_cuda(); 
-    printf("server buffer, addr: %p, buf_cuda: %p\n", buf->addr, buf->buf_cuda);
+    // printf("server buffer, addr: %p, buf_cuda: %p\n", buf->addr, buf->buf_cuda);
 
     rgb ? buf->init_rgb(width, height, stride) : buf->init_yuv(width, height);
 
