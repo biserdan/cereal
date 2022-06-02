@@ -57,6 +57,7 @@ class VisionBuf {
 
   // CUDA
   void * buf_cuda = nullptr;
+  //void * buf_cuda_test = nullptr;
 
   // ion
   int handle = 0;

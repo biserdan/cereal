@@ -76,6 +76,7 @@ void VisionBuf::init_cuda(){
   //err = cudaMalloc((void**)&buf_cuda, this->len);
   //assert(err == 0);
   checkMsg(cudaMalloc((void**)&buf_cuda, this->len));
+  //checkMsg(cudaHostAlloc((void**)&buf_cuda_test,this->len, cudaHostAllocWriteCombined));
 
   // fprintf(stdout,"Visionbuf: %d Pointer: %p\n",type,buf_cuda);
 }
@@ -113,10 +114,12 @@ int VisionBuf::sync(int dir) {
 
   if (dir == VISIONBUF_SYNC_FROM_DEVICE) {
     err = cudaMemcpy(this->addr, buf_cuda, this->len, cudaMemcpyDeviceToHost); 
+    // printf("VISIONBUF_SYNC_FROM_DEVICE\n");
   } else {
     err = cudaMemcpy(buf_cuda, this->addr, this->len, cudaMemcpyHostToDevice);
+    // printf("VISIONBUF_SYNC_TO_DEVICE\n");
   }
-
+  cudaDeviceSynchronize();
   return err;
 }
 

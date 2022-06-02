@@ -154,6 +154,7 @@ void VisionIpcServer::send(VisionBuf * buf, VisionIpcBufExtra * extra, bool sync
   //printf("start uint64_t= %" PRIx64 "\n",*((uint64_t*)buf->addr));
   //printf("end uint8_t= %d\n",*(((uint8_t*)buf->addr)+100*100*3-1));
   if (sync) {
+  //if (true) {
     if (buf->sync(VISIONBUF_SYNC_FROM_DEVICE) != 0) {
       LOGE("Failed to sync buffer");
     }
