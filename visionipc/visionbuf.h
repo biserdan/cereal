@@ -56,7 +56,10 @@ class VisionBuf {
 /*  cl_command_queue copy_q = nullptr;*/
 
   // CUDA
+  //void * buf_cuda = nullptr;
+  void * buf_cuda_h = nullptr;
   void * buf_cuda = nullptr;
+  //void * buf_cuda_test = nullptr;
 
   // ion
   int handle = 0;

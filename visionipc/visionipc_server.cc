@@ -151,6 +151,7 @@ VisionBuf * VisionIpcServer::get_buffer(VisionStreamType type){
 
 void VisionIpcServer::send(VisionBuf * buf, VisionIpcBufExtra * extra, bool sync){
   if (sync) {
+  //if (true) {
     if (buf->sync(VISIONBUF_SYNC_FROM_DEVICE) != 0) {
       LOGE("Failed to sync buffer");
     }
