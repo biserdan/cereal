@@ -11,7 +11,25 @@ static void zmq_sleep(int milliseconds=1000){
   }
 }
 
+// static void print_file(int fd) {
+//   FILE* ptr =  fdopen(fd, "r");
+//   if (NULL == ptr) {
+//       printf("file can't be opened \n");
+//   }
+
+//   uint8_t ch;
+//   // int size = 100; 
+//   int size = 100*100*3; // RGB
+
+//   for(int i = 0; i < size; i++) {
+//     ch = fgetc(ptr);
+//     printf("%x ", ch);
+//   }
+//   printf("\n");
+// }
+
 TEST_CASE("Connecting"){
+
   VisionIpcServer server("camerad");
   server.create_buffers(VISION_STREAM_ROAD, 1, false, 100, 100);
   server.start_listener();
@@ -64,18 +82,33 @@ TEST_CASE("Send single buffer"){
   VisionBuf * buf = server.get_buffer(VISION_STREAM_ROAD);
   REQUIRE(buf != nullptr);
 
-  *((uint64_t*)buf->buf_cuda_h) = 1234;
+  *((uint64_t*)buf->addr) = UINT64_MAX; // 8 byte --> first eight bytes
+  *(((uint8_t*)buf->addr)+100*100*3-1) = 1; // 1 byte --> last byte
+
+  // read content of buffer file
+  printf("content at start:\n" );
+  printf("start uint64_t= %" PRIx64 "\n",*((uint64_t*)buf->addr));
+  printf("end uint8_t= %d\n",*(((uint8_t*)buf->addr)+100*100*3-1));
 
   VisionIpcBufExtra extra = {0};
   extra.frame_id = 1337;
   buf->set_frame_id(extra.frame_id);
-
   server.send(buf, &extra);
+
+  // read content of buffer file
+  // printf("content after synch:\n");
+  // print_file(buf->fd);
 
   VisionIpcBufExtra extra_recv = {0};
   VisionBuf * recv_buf = client.recv(&extra_recv);
+
+  // read content of buffer file
+  // printf("content recv_buf:\n");
+  // print_file(recv_buf->fd);
+
   REQUIRE(recv_buf != nullptr);
-  REQUIRE(*(uint64_t*)recv_buf->buf_cuda_h == 1234);
+  REQUIRE(*(uint64_t*)recv_buf->addr == UINT64_MAX);
+  REQUIRE(*(((uint8_t*)recv_buf->addr)+100*100*3-1) == 1);
   REQUIRE(extra_recv.frame_id == extra.frame_id);
   REQUIRE(recv_buf->get_frame_id() == extra.frame_id);
 }
