@@ -78,6 +78,7 @@ bool VisionIpcClient::connect(bool blocking){
     }
 
     // if (device_id) buffers[i].init_cl(device_id, ctx);
+    // create CUDA buffers
     buffers[i].init_cuda();
   }
 

@@ -1,6 +1,6 @@
 import cereal.messaging as messaging
 import time
-
+# test publisher cereal
 # in publisher
 pm = messaging.PubMaster(['sensorEvents'])
 dat = messaging.new_message('sensorEvents', size=1)

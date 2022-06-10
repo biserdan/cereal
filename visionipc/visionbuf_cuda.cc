@@ -59,6 +59,7 @@ void VisionBuf::allocate(size_t length) {
   this->frame_id = (uint64_t*)((uint8_t*)this->addr + this->len);
 }
 
+// OpenCL
 //void VisionBuf::init_cl(cl_device_id device_id, cl_context ctx){
 // void VisionBuf::init_cl(){
 //   int err;
@@ -76,9 +77,11 @@ void VisionBuf::init_cuda(){
   //err = cudaMalloc((void**)&buf_cuda, this->len);
   //assert(err == 0);
   //checkMsg(cudaMalloc((void**)&buf_cuda, this->len));
+
+  // create shared CUDA buffer
   checkMsg(cudaHostAlloc((void**)&buf_cuda_h,this->len, cudaHostAllocWriteCombined));
   checkMsg(cudaHostGetDevicePointer((void **)&buf_cuda,(void *)buf_cuda_h,0));
-
+  // debugging
   // fprintf(stdout,"Visionbuf: %d Pointer: %p\n",type,buf_cuda);
 }
 
@@ -91,7 +94,7 @@ void VisionBuf::import(){
   this->frame_id = (uint64_t*)((uint8_t*)this->addr + this->len);
 }
 
-
+// OpenCL
 // int VisionBuf::sync(int dir) {
 //   int err = 0;
 //   if (!this->buf_cl) return 0;
@@ -114,12 +117,15 @@ int VisionBuf::sync(int dir) {
   if (!this->buf_cuda) return 0;
 
   if (dir == VISIONBUF_SYNC_FROM_DEVICE) {
+    // copy buffer from device to host
     err = cudaMemcpy(this->addr, buf_cuda, this->len, cudaMemcpyDeviceToHost); 
     // printf("VISIONBUF_SYNC_FROM_DEVICE\n");
   } else {
+    // copy buffer from host to device
     err = cudaMemcpy(buf_cuda, this->addr, this->len, cudaMemcpyHostToDevice);
     // printf("VISIONBUF_SYNC_TO_DEVICE\n");
   }
+  // wait until copy is finished
   cudaDeviceSynchronize();
   return err;
 }
@@ -145,6 +151,7 @@ int VisionBuf::free() {
   int err = 0;
 
   //cudaFree(buf_cuda);
+  // clean up CUDA buffers
   cudaFreeHost(buf_cuda_h);
 
   err = munmap(this->addr, this->len);
